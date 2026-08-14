@@ -6,11 +6,11 @@ import { Edit2, Plus, Loader2, Save, X, ArrowLeft, CheckCircle2, TrendingUp, Ale
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-type Store = { id: number; name: string };
-type Category = { id: number; name: string };
+type Store = { id: string; name: string };
+type Category = { id: string; name: string };
 
 type Coupon = {
-  id?: number;
+  id?: string;
   title: string;
   slug: string;
   description: string;
@@ -20,8 +20,8 @@ type Coupon = {
   verified: boolean;
   is_trending: boolean;
   is_today_deal: boolean;
-  store: number | "";
-  category: number | "";
+  store: string;
+  category: string;
 };
 
 export default function CouponDetail({ params }: { params: Promise<{ id: string }> }) {
@@ -79,7 +79,7 @@ export default function CouponDetail({ params }: { params: Promise<{ id: string 
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const payload = { ...form, store: Number(form.store), category: form.category ? Number(form.category) : null };
+      const payload = { ...form, store: form.store, category: form.category || null };
       
       if (!isNew) {
         await fetchAdminAPI(`/admin/coupons/${id}/`, {
@@ -175,7 +175,7 @@ export default function CouponDetail({ params }: { params: Promise<{ id: string 
                 required 
                 className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-gray-50 focus:bg-white transition-all cursor-pointer" 
                 value={form.store} 
-                onChange={(e) => setForm({...form, store: e.target.value === "" ? "" : Number(e.target.value)})}
+                onChange={(e) => setForm({...form, store: e.target.value})}
               >
                 <option value="" disabled>Select a Store</option>
                 {stores.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -187,7 +187,7 @@ export default function CouponDetail({ params }: { params: Promise<{ id: string 
               <select 
                 className="w-full border border-gray-200 p-3 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-gray-50 focus:bg-white transition-all cursor-pointer" 
                 value={form.category} 
-                onChange={(e) => setForm({...form, category: e.target.value === "" ? "" : Number(e.target.value)})}
+                onChange={(e) => setForm({...form, category: e.target.value})}
               >
                 <option value="">Select a Category</option>
                 {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
