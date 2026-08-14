@@ -127,6 +127,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
+        <meta name="impact-site-verification" content="602b4170-c3fb-41d7-b914-dec9b90b37a3" />
       </head>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <Navbar />
