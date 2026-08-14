@@ -9,13 +9,17 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Skip auth check if we're already on the login page
+    const token = localStorage.getItem("admin_access_token");
+
     if (pathname === "/admin/login") {
-      setIsAuthenticated(true);
+      if (token) {
+        router.push("/admin");
+      } else {
+        setIsAuthenticated(true);
+      }
       return;
     }
 
-    const token = localStorage.getItem("admin_access_token");
     if (!token) {
       router.push("/admin/login");
     } else {
