@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Block dev/internal pages
+Disallow: /coupon-preview
+Disallow: /api/
+
+Sitemap: https://blinkdeal.cc/sitemap.xml
