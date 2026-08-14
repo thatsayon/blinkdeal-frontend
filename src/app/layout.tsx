@@ -77,6 +77,13 @@ export const metadata: Metadata = {
   alternates: {
     canonical: BASE_URL,
   },
+  icons: {
+    icon: [
+      { url: "/BD.ico" },
+      { url: "/BD.png", type: "image/png" },
+    ],
+    apple: "/BD.png",
+  },
 };
 
 // JSON-LD: Organization structured data (sitewide)
