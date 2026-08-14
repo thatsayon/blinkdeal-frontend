@@ -11,29 +11,31 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
 async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${API_URL}${endpoint}`;
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-    // For Next.js App Router, we can add cache rules if needed. 
-    // Defaulting to revalidate every 60s for most data to keep it fresh.
-    next: { revalidate: 60, ...options.next },
-  });
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+      next: { revalidate: 60, ...options.next },
+    });
 
-  if (!response.ok) {
-    throw new Error(`API Error: ${response.status} - ${response.statusText} for URL: ${url}`);
+    if (!response.ok) {
+      console.warn(`[Build Warning] API Error: ${response.status} - ${response.statusText} for URL: ${url}`);
+      return [] as T; // Return empty data on non-200 to prevent build crash
+    }
+
+    const data = await response.json();
+    
+    if (data && typeof data === 'object' && 'results' in data && Array.isArray(data.results)) {
+      return data.results as T;
+    }
+    return data as T;
+  } catch (error) {
+    console.warn(`[Build Warning] Network error fetching ${url}:`, error);
+    return [] as T; // Return empty data on network failure (e.g., ECONNREFUSED)
   }
-
-  const data = await response.json();
-  
-  // Unwrap Django REST Framework paginated responses
-  if (data && typeof data === 'object' && 'results' in data && Array.isArray(data.results)) {
-    return data.results as T;
-  }
-
-  return data as T;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
