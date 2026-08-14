@@ -1,4 +1,6 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+let API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+if (API_URL.endsWith('/')) API_URL = API_URL.slice(0, -1);
+if (!API_URL.endsWith('/api')) API_URL = `${API_URL}/api`;
 
 export async function fetchAdminAPI<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${API_URL}${endpoint}`;

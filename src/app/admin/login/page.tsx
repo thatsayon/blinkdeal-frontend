@@ -16,7 +16,11 @@ export default function AdminLogin() {
     setError("");
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api"}/auth/login/`, {
+      let baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+      if (baseUrl.endsWith('/')) baseUrl = baseUrl.slice(0, -1);
+      if (!baseUrl.endsWith('/api')) baseUrl = `${baseUrl}/api`;
+
+      const response = await fetch(`${baseUrl}/auth/login/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
