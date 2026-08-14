@@ -77,10 +77,14 @@ export default async function PopularStores() {
                                 className="group flex flex-col items-center"
                             >
                                 {/* Logo Box */}
-                                <div className={`flex h-20 sm:h-24 w-full items-center justify-center rounded-2xl border border-gray-100 ${store.logo_color} shadow-sm transition-all duration-300 group-hover:border-gray-200 group-hover:shadow-md group-hover:-translate-y-1`}>
-                                    <span className={`text-xl sm:text-2xl font-black tracking-tight`}>
-                                        {store.name.substring(0, 10)}
-                                    </span>
+                                <div className={`relative flex h-20 sm:h-24 w-full items-center justify-center overflow-hidden rounded-2xl border border-gray-100 ${store.logo_color} shadow-sm transition-all duration-300 group-hover:border-gray-200 group-hover:shadow-md group-hover:-translate-y-1`}>
+                                    {store.logo_image ? (
+                                        <img src={store.logo_image} alt={store.name} className="object-contain p-2 h-full w-full" />
+                                    ) : (
+                                        <span className={`text-xl sm:text-2xl font-black tracking-tight`}>
+                                            {store.name.substring(0, 10)}
+                                        </span>
+                                    )}
                                 </div>
                                 {/* Store Name Below */}
                                 <span className="mt-3 text-center text-sm font-semibold text-gray-700 transition-colors group-hover:text-gray-900">

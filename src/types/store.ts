@@ -4,6 +4,7 @@ export interface Store {
   slug: string;
   description?: string;
   url: string;
+  logo_image?: string;
   logo_color: string;
   is_featured: boolean;
   coupon_count: number;
