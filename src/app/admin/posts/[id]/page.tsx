@@ -26,6 +26,7 @@ type Post = {
   excerpt: string;
   content: string;
   cover_image: string;
+  cover_image_file?: File | null;
   author: number | "";
   tags: string[];
   published_at: string;
@@ -79,11 +80,23 @@ export default function PostDetail({ params }: { params: Promise<{ id: string }>
     e?.preventDefault();
     setIsSubmitting(true);
     try {
-      const payload = { ...form, author: form.author ? Number(form.author) : null };
+      const formData = new FormData();
+      formData.append("title", form.title);
+      formData.append("slug", form.slug);
+      formData.append("excerpt", form.excerpt);
+      formData.append("content", form.content);
+      if (form.author) formData.append("author", String(form.author));
+      formData.append("tags", JSON.stringify(form.tags));
+      formData.append("published_at", form.published_at);
+      formData.append("is_published", String(form.is_published));
+      if (form.cover_image_file) {
+        formData.append("cover_image", form.cover_image_file);
+      }
+
       if (!isNew) {
-        await fetchAdminAPI(`/admin/posts/${id}/`, { method: "PUT", body: JSON.stringify(payload) });
+        await fetchAdminAPI(`/admin/posts/${id}/`, { method: "PATCH", body: formData });
       } else {
-        await fetchAdminAPI("/admin/posts/", { method: "POST", body: JSON.stringify(payload) });
+        await fetchAdminAPI("/admin/posts/", { method: "POST", body: formData });
       }
       router.push("/admin/posts");
     } catch {
@@ -224,19 +237,23 @@ export default function PostDetail({ params }: { params: Promise<{ id: string }>
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-3">
             <h3 className="font-semibold text-gray-900 text-sm uppercase tracking-wider flex items-center gap-1.5"><ImageIcon className="w-4 h-4 text-gray-400" /> Cover Image</h3>
             <input
-              type="url"
-              required
-              placeholder="https://..."
-              className="w-full border border-gray-200 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-gray-50 focus:bg-white transition-all"
-              value={form.cover_image}
-              onChange={(e) => setForm({ ...form, cover_image: e.target.value })}
+              type="file"
+              accept="image/*"
+              required={isNew && !form.cover_image}
+              className="w-full border border-gray-200 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-gray-50 focus:bg-white transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setForm({ ...form, cover_image_file: file, cover_image: URL.createObjectURL(file) });
+                }
+              }}
             />
             {form.cover_image && (
               <div className="relative h-36 rounded-xl overflow-hidden border border-gray-100 bg-gray-50 shadow-sm">
                 <img src={form.cover_image} alt="Cover preview" className="w-full h-full object-cover" />
                 <button
                   type="button"
-                  onClick={() => setForm({ ...form, cover_image: "" })}
+                  onClick={() => setForm({ ...form, cover_image: "", cover_image_file: null })}
                   className="absolute top-2 right-2 p-1 bg-white/90 rounded-md hover:bg-white transition-colors shadow"
                 >
                   <X className="w-4 h-4 text-gray-600" />
