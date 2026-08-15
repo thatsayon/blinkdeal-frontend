@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import StoreDetailClient from "./StoreDetailClient";
+import StoreDetailClient from "@/app/stores/[slug]/StoreDetailClient";
 import { getStoreDetail, getStoreCoupons } from "@/lib/api";
 import { notFound } from "next/navigation";
 
