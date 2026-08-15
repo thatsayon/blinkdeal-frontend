@@ -150,11 +150,19 @@ function StoresContent({ initialStores }: StoresClientProps) {
                             >
                                 <div className="flex items-center gap-4">
                                     <div
-                                        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${
+                                        className={`relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl overflow-hidden ${
                                             store.logo_color || "bg-gray-100 text-gray-900"
                                         } font-black text-xl transition-transform group-hover:scale-105`}
                                     >
-                                        {store.name.charAt(0)}
+                                        {store.logo_image ? (
+                                            <img
+                                                src={store.logo_image}
+                                                alt={`${store.name} logo`}
+                                                className="h-full w-full object-cover"
+                                            />
+                                        ) : (
+                                            store.name.charAt(0)
+                                        )}
                                     </div>
                                     <div>
                                         <h3 className="text-base font-bold text-gray-900 line-clamp-1">{store.name}</h3>
