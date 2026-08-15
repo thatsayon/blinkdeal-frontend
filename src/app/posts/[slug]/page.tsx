@@ -34,12 +34,20 @@ export async function generateMetadata(
         ]
       : [];
 
+    const postUrl = `https://blinkdeal.cc/posts/${post.slug}`;
+
     return {
       title: `${post.title} | BlinkDeal`,
       description: post.excerpt,
+      alternates: {
+        canonical: postUrl,
+      },
       openGraph: {
         title: post.title,
         description: post.excerpt,
+        url: postUrl,
+        siteName: 'BlinkDeal',
+        locale: 'en_US',
         images: ogImages,
         type: 'article',
         publishedTime: post.published_at,
