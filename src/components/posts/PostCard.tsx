@@ -4,7 +4,7 @@ import type { Post } from '@/types/post';
 import { Calendar, ArrowUpRight } from 'lucide-react';
 
 export default function PostCard({ post }: { post: Post }) {
-  const primaryTag = post.tags[0] || 'Article';
+  const primaryTag = post.tags?.[0] || 'Article';
   const formattedDate = new Date(post.published_at).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
@@ -17,13 +17,19 @@ export default function PostCard({ post }: { post: Post }) {
         
         {/* Image Container */}
         <div className="relative h-[240px] w-full bg-gray-100 border-b border-black/[0.04] overflow-hidden">
-          <Image
-            src={post.cover_image}
-            alt={post.title}
-            fill
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
+          {post.cover_image ? (
+            <Image
+              src={post.cover_image}
+              alt={post.title}
+              fill
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400 font-semibold">
+              BlinkDeal
+            </div>
+          )}
           
           {/* Floating Category Pill */}
           <div className="absolute top-4 left-4">

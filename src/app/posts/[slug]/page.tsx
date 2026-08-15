@@ -23,29 +23,33 @@ export async function generateMetadata(
     const resolvedParams = await params;
     const post = await getPostDetail(resolvedParams.slug);
 
-    return {
-      title: `${post.title} | BlinkDeal`,
-      description: post.excerpt,
-      openGraph: {
-        title: post.title,
-        description: post.excerpt,
-        images: [
+    const ogImages = post.cover_image
+      ? [
           {
             url: post.cover_image,
             width: 1200,
             height: 630,
             alt: post.title,
           },
-        ],
+        ]
+      : [];
+
+    return {
+      title: `${post.title} | BlinkDeal`,
+      description: post.excerpt,
+      openGraph: {
+        title: post.title,
+        description: post.excerpt,
+        images: ogImages,
         type: 'article',
         publishedTime: post.published_at,
-        authors: [post.author.name],
+        authors: post.author?.name ? [post.author.name] : ['BlinkDeal'],
       },
       twitter: {
         card: 'summary_large_image',
         title: post.title,
         description: post.excerpt,
-        images: [post.cover_image],
+        images: post.cover_image ? [post.cover_image] : [],
       },
     };
   } catch (error) {
@@ -75,13 +79,15 @@ export default async function PostDetailPage({ params }: Props) {
       "@context": "https://schema.org",
       "@type": "Article",
       headline: post.title,
-      image: [post.cover_image],
+      image: post.cover_image ? [post.cover_image] : [],
       datePublished: post.published_at,
       dateModified: post.updated_at || post.published_at,
-      author: [{
-        "@type": "Person",
-        name: post.author.name,
-      }],
+      author: [
+        {
+          "@type": post.author?.name ? "Person" : "Organization",
+          name: post.author?.name || "BlinkDeal",
+        },
+      ],
       publisher: {
         "@type": "Organization",
         name: "BlinkDeal",
@@ -110,36 +116,54 @@ export default async function PostDetailPage({ params }: Props) {
             Back to all posts
           </Link>
           
-          <div className="flex flex-wrap gap-2 mb-4">
-            {post.tags.map((tag: string) => (
-              <span 
-                key={tag} 
-                className="px-3 py-1 bg-blue-50 text-blue-700 text-sm font-medium rounded-full border border-blue-100"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {post.tags.map((tag: string) => (
+                <span 
+                  key={tag} 
+                  className="px-3 py-1 bg-blue-50 text-blue-700 text-sm font-medium rounded-full border border-blue-100"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
 
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight mb-6 tracking-tight">
             {post.title}
           </h1>
 
           <div className="flex flex-wrap items-center gap-6 text-gray-700 mb-8">
-            <div className="flex items-center gap-3">
-              <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-200 shadow-sm">
-                <Image
-                  src={post.author.avatar}
-                  alt={post.author.name}
-                  fill
-                  className="object-cover"
-                />
+            {post.author ? (
+              <div className="flex items-center gap-3">
+                <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-200 shadow-sm bg-gray-100 flex items-center justify-center">
+                  {post.author.avatar ? (
+                    <Image
+                      src={post.author.avatar}
+                      alt={post.author.name}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <User className="w-5 h-5 text-gray-500" />
+                  )}
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-medium text-sm text-gray-900">{post.author.name}</span>
+                  <span className="text-xs text-gray-500">Author</span>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <span className="font-medium text-sm text-gray-900">{post.author.name}</span>
-                <span className="text-xs text-gray-500">Author</span>
+            ) : (
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm">
+                  BD
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-medium text-sm text-gray-900">BlinkDeal</span>
+                  <span className="text-xs text-gray-500">Editor</span>
+                </div>
               </div>
-            </div>
+            )}
             
             <div className="hidden sm:block w-px h-8 bg-gray-200" />
             
@@ -153,18 +177,20 @@ export default async function PostDetailPage({ params }: Props) {
         </div>
 
         {/* Featured Image */}
-        <div className="container mx-auto px-4 md:px-6 max-w-3xl">
-          <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-lg border border-gray-100">
-            <Image
-              src={post.cover_image}
-              alt={post.title}
-              fill
-              className="object-cover"
-              priority
-              sizes="(max-width: 1024px) 100vw, 1024px"
-            />
+        {post.cover_image && (
+          <div className="container mx-auto px-4 md:px-6 max-w-3xl">
+            <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-lg border border-gray-100">
+              <Image
+                src={post.cover_image}
+                alt={post.title}
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 1024px) 100vw, 1024px"
+              />
+            </div>
           </div>
-        </div>
+        )}
       </header>
 
       {/* Main Content */}

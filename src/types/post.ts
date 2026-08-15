@@ -11,8 +11,8 @@ export interface Post {
   title: string;
   excerpt: string;
   content?: string; // Detail only
-  cover_image: string;
-  author: Author;
+  cover_image: string | null;
+  author: Author | null;
   tags: string[];
   published_at: string;
   created_at?: string;
