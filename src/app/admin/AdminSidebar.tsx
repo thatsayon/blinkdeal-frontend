@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Tags, Store as StoreIcon, Ticket, FileText } from "lucide-react";
+import { LayoutDashboard, Tags, Store as StoreIcon, Ticket, FileText, Mail } from "lucide-react";
 import LogoutButton from "./LogoutButton";
 
 export default function AdminSidebar() {
@@ -14,6 +14,7 @@ export default function AdminSidebar() {
     { name: "Stores", href: "/admin/stores", icon: StoreIcon },
     { name: "Coupons", href: "/admin/coupons", icon: Ticket },
     { name: "Posts", href: "/admin/posts", icon: FileText },
+    { name: "Contacts", href: "/admin/contacts", icon: Mail },
   ];
 
   return (

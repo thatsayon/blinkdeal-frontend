@@ -10,7 +10,8 @@ export default function ContactForm() {
         e.preventDefault();
         setStatus("loading");
         
-        const formData = new FormData(e.currentTarget);
+        const form = e.currentTarget;
+        const formData = new FormData(form);
         const data = {
             name: formData.get("name") as string,
             email: formData.get("email") as string,
@@ -21,7 +22,7 @@ export default function ContactForm() {
         try {
             await submitContactForm(data);
             setStatus("success");
-            e.currentTarget.reset();
+            form.reset();
         } catch (error) {
             console.error("Form submission error:", error);
             setStatus("error");
