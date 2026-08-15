@@ -99,8 +99,8 @@ export default function PostDetail({ params }: { params: Promise<{ id: string }>
         await fetchAdminAPI("/admin/posts/", { method: "POST", body: formData });
       }
       router.push("/admin/posts");
-    } catch {
-      showMessage("error", "Error saving post. Please try again.");
+    } catch (err: any) {
+      showMessage("error", err.message || "Error saving post. Please try again.");
       setIsSubmitting(false);
     }
   };

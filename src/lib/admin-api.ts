@@ -33,7 +33,15 @@ export async function fetchAdminAPI<T>(endpoint: string, options: RequestInit = 
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.detail || `API Error: ${response.status}`);
+    if (errorData.detail) {
+      throw new Error(errorData.detail);
+    } else if (Object.keys(errorData).length > 0) {
+      const messages = Object.entries(errorData)
+        .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(", ") : v}`)
+        .join(" | ");
+      throw new Error(messages);
+    }
+    throw new Error(`API Error: ${response.status}`);
   }
 
   if (response.status === 204) {
