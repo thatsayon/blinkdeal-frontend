@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { searchAll, type SearchResults } from "@/lib/api";
 import {
@@ -187,27 +188,17 @@ export default function Navbar() {
           <div className="flex items-center gap-6">
             <Link
               href="/"
-              className="group flex items-center gap-2.5 outline-none"
+              className="group flex items-center outline-none transition-opacity hover:opacity-90"
               aria-label="BlinkDeal Home"
             >
-              {/* Glowing Brand Icon */}
-              <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 text-white shadow-md shadow-blue-500/25 ring-1 ring-white/50 transition-all duration-300 group-hover:scale-105 group-hover:shadow-blue-500/40 group-hover:rotate-1">
-                <Zap size={20} className="fill-white stroke-white transition-transform duration-300 group-hover:scale-110" />
-                <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 ring-2 ring-white"></span>
-                </span>
-              </div>
-
-              {/* Logo Typography */}
-              <div className="flex flex-col">
-                <span className="text-xl font-black tracking-tight text-gray-900 leading-none sm:text-2xl">
-                  Blink<span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">Deal</span>
-                </span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                  Verified Coupons
-                </span>
-              </div>
+              <Image
+                src="/blink-deal-logo.svg"
+                alt="BlinkDeal"
+                width={150}
+                height={38}
+                className="h-7 sm:h-8 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+                priority
+              />
             </Link>
           </div>
 
@@ -572,14 +563,21 @@ export default function Navbar() {
           <div className="fixed inset-y-0 right-0 flex w-[85vw] max-w-sm flex-col bg-white shadow-2xl border-l border-gray-200">
             {/* Drawer Header */}
             <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
-              <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-xs">
-                  <Zap size={16} className="fill-white stroke-white" />
-                </div>
-                <span className="text-lg font-black tracking-tight text-gray-900">
-                  Blink<span className="text-blue-600">Deal</span>
-                </span>
-              </div>
+              <Link
+                href="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center outline-none"
+                aria-label="BlinkDeal Home"
+              >
+                <Image
+                  src="/blink-deal-logo.svg"
+                  alt="BlinkDeal"
+                  width={130}
+                  height={32}
+                  className="h-6 sm:h-7 w-auto object-contain"
+                  priority
+                />
+              </Link>
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(false)}
