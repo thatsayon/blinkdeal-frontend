@@ -76,7 +76,7 @@ export default function CouponCard({ coupon }: CouponCardProps) {
                         <span className="mt-1 block text-[10px] font-bold uppercase tracking-wider text-gray-500">Offer Value</span>
                     </div>
 
-                    {coupon.code && coupon.code.toLowerCase() !== "no code" ? (
+                    {coupon.code && coupon.code.toLowerCase() !== "no code" && coupon.code.trim().toLowerCase() !== "offer activated" ? (
                         <button
                             onClick={handleReveal}
                             className="group/btn relative flex w-full h-11 items-center overflow-hidden rounded-xl border-2 border-dashed border-blue-200 bg-blue-50/50 transition-all hover:border-blue-400 cursor-pointer active:scale-[0.98]"
