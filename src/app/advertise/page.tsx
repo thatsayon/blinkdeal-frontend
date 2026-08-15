@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ContactForm from "./ContactForm";
 
 export const metadata: Metadata = {
     title: "Advertise with BlinkDeal \u2014 Reach Millions of Shoppers",
@@ -91,18 +92,12 @@ export default function Advertise() {
                     </div>
                 </div>
 
-                {/* CTA */}
-                <div className="bg-gray-900 rounded-[3rem] p-12 sm:p-24 text-center shadow-2xl relative overflow-hidden">
+                {/* CTA / Contact Form */}
+                <div className="bg-gray-900 rounded-[3rem] p-4 sm:p-12 text-center shadow-2xl relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-500/20 blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
                     
-                    <div className="relative z-10">
-                        <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-6">Ready to scale your sales?</h2>
-                        <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto font-medium">
-                            We work with brands of all sizes, from direct-to-consumer startups to Fortune 500 retailers. Let's build a custom strategy.
-                        </p>
-                        <a href="mailto:partners@blinkdeal.cc" className="inline-flex items-center justify-center bg-white px-10 py-5 text-sm font-bold text-gray-900 transition-transform hover:scale-105 rounded-2xl shadow-[0_0_40px_rgb(255,255,255,0.2)]">
-                            Request Media Kit
-                        </a>
+                    <div className="relative z-10 max-w-2xl mx-auto">
+                        <ContactForm />
                     </div>
                 </div>
 

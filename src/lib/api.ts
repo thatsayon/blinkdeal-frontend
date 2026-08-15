@@ -121,3 +121,22 @@ export const subscribeNewsletter = async (email: string): Promise<{ detail: stri
     cache: "no-store",
   });
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Contacts API
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface ContactFormData {
+  name: string;
+  email: string;
+  company?: string;
+  message: string;
+}
+
+export const submitContactForm = async (data: ContactFormData): Promise<{ detail?: string }> => {
+  return fetchAPI<{ detail?: string }>("/contacts/submit/", {
+    method: "POST",
+    body: JSON.stringify(data),
+    cache: "no-store",
+  });
+};
