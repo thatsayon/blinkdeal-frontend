@@ -17,15 +17,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         return {
             title: `${storeName} Promo Code "${coupon.code}" — ${coupon.discount} | BlinkDeal`,
             description: `Verified ${storeName} coupon code ${coupon.code}: ${coupon.title}. ${coupon.expiry}. Copy and save instantly at BlinkDeal.`,
+            alternates: {
+                canonical: `https://blinkdeal.cc/coupons/${coupon.store_slug || store}/${coupon.slug}`
+            },
             openGraph: {
                 title: `${storeName}: ${coupon.title}`,
                 description: `Use code ${coupon.code} to get ${coupon.discount} at ${storeName}. Verified and working.`,
                 siteName: "BlinkDeal",
+                type: "website",
+                url: `https://blinkdeal.cc/coupons/${coupon.store_slug || store}/${coupon.slug}`,
+                images: [
+                    {
+                        url: `https://blinkdeal.cc/og/${coupon.slug}.jpg`,
+                        width: 1200,
+                        height: 630,
+                        alt: `${storeName} Coupon`
+                    }
+                ],
             },
             twitter: {
-                card: "summary",
+                card: "summary_large_image",
                 title: `${storeName}: ${coupon.title}`,
                 description: `Use code ${coupon.code} to get ${coupon.discount} at ${storeName}.`,
+                images: [`https://blinkdeal.cc/og/${coupon.slug}.jpg`],
             },
         };
     } catch (e) {
@@ -42,8 +56,8 @@ export default async function CouponDetailPage({ params }: Props) {
         const couponSchema = {
             "@context": "https://schema.org",
             "@type": "DiscountOffer",
-            name: coupon.title,
-            description: coupon.description,
+            name: `${storeName} — ${coupon.title}`,
+            description: `Coupon discount: ${coupon.discount}. ${coupon.description}`,
             discountCode: coupon.code,
             seller: {
                 "@type": "Organization",

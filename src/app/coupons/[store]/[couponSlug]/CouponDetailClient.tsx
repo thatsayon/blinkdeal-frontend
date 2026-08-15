@@ -18,6 +18,10 @@ export default function CouponDetailClient({ coupon }: { coupon: Coupon }) {
         setCopied(true);
         recordCouponClick(coupon.slug).catch(console.error); // Track click without blocking
         setTimeout(() => setCopied(false), 2500);
+
+        if (coupon.store_url) {
+            window.open(coupon.store_url, "_blank", "noopener,noreferrer");
+        }
     };
 
     const handleShareCopy = () => {
@@ -58,9 +62,12 @@ export default function CouponDetailClient({ coupon }: { coupon: Coupon }) {
                                 )}
                             </div>
                             <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 mb-3">
-                                {coupon.title}
+                                {storeName} — {coupon.title}
                             </h1>
-                            <p className="text-lg text-gray-500 mb-5 leading-relaxed">{coupon.description}</p>
+                            <div className="text-lg text-gray-500 mb-5 leading-relaxed">
+                                <p className="mb-2"><strong className="text-gray-900">Coupon discount:</strong> {coupon.discount}</p>
+                                <p>{coupon.description}</p>
+                            </div>
                             <div className="flex flex-wrap items-center gap-3">
                                 {coupon.verified && (
                                     <span className="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-full font-bold text-xs uppercase tracking-wide">
