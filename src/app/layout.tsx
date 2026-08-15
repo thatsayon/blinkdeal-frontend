@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -137,6 +138,22 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <meta name="impact-site-verification" content="602b4170-c3fb-41d7-b914-dec9b90b37a3" />
       </head>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){window.dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}');
+              `}
+            </Script>
+          </>
+        )}
         <Navbar />
         {children}
         <Footer />
