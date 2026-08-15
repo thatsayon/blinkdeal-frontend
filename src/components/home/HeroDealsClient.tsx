@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import type { Coupon } from "@/types/coupon";
 
 interface HeroDealsClientProps {
@@ -11,6 +11,7 @@ interface HeroDealsClientProps {
 }
 
 export default function HeroDealsClient({ initialDeals }: HeroDealsClientProps) {
+    const router = useRouter();
     const scrollRef = useRef<HTMLDivElement>(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -24,7 +25,15 @@ export default function HeroDealsClient({ initialDeals }: HeroDealsClientProps) 
         color: deal.color || "bg-blue-100 text-blue-900",
         image: deal.cover_image || deal.store_logo,
         href: `/coupons/${deal.store_slug || deal.store}/${deal.slug}`,
+        storeUrl: deal.store_url,
     }));
+
+    const handleDealClick = (dealHref: string, storeUrl?: string) => {
+        if (storeUrl) {
+            window.open(storeUrl, "_blank", "noopener,noreferrer");
+        }
+        router.push(dealHref);
+    };
 
     const updatePagesAndIndex = () => {
         if (!scrollRef.current) return;
@@ -88,9 +97,9 @@ export default function HeroDealsClient({ initialDeals }: HeroDealsClientProps) 
                                 
                                 {/* Left Card (70%) */}
                                 {page.left && (
-                                    <Link 
-                                        href={page.left.href}
-                                        className="group relative flex w-full md:w-[70%] flex-col overflow-hidden rounded-2xl bg-white border border-gray-200 transition-all hover:border-gray-300 hover:shadow-sm"
+                                    <div 
+                                        onClick={() => handleDealClick(page.left.href, page.left.storeUrl)}
+                                        className="cursor-pointer group relative flex w-full md:w-[70%] flex-col overflow-hidden rounded-2xl bg-white border border-gray-200 transition-all hover:border-gray-300 hover:shadow-sm"
                                     >
                                         <div className="relative h-56 sm:h-64 w-full shrink-0 overflow-hidden bg-gray-100">
                                             {page.left.image ? (
@@ -119,14 +128,14 @@ export default function HeroDealsClient({ initialDeals }: HeroDealsClientProps) 
                                                 </span>
                                             </div>
                                         </div>
-                                    </Link>
+                                    </div>
                                 )}
 
                                 {/* Right Card (30%) */}
                                 {page.right && (
-                                    <Link 
-                                        href={page.right.href}
-                                        className="group relative flex w-full md:w-[30%] flex-col overflow-hidden rounded-2xl bg-white border border-gray-200 transition-all hover:border-gray-300 hover:shadow-sm"
+                                    <div 
+                                        onClick={() => handleDealClick(page.right.href, page.right.storeUrl)}
+                                        className="cursor-pointer group relative flex w-full md:w-[30%] flex-col overflow-hidden rounded-2xl bg-white border border-gray-200 transition-all hover:border-gray-300 hover:shadow-sm"
                                     >
                                         <div className="relative h-40 sm:h-64 w-full shrink-0 overflow-hidden bg-gray-100">
                                             {page.right.image ? (
@@ -155,7 +164,7 @@ export default function HeroDealsClient({ initialDeals }: HeroDealsClientProps) 
                                                 </span>
                                             </div>
                                         </div>
-                                    </Link>
+                                    </div>
                                 )}
                             </div>
                         ))}
