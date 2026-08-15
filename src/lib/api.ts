@@ -85,6 +85,10 @@ export const getStoreDetail = async (slug: string): Promise<Store> => {
   return fetchAPI<Store>(`/stores/${slug}/`);
 };
 
+export const getStoreCoupons = async (slug: string): Promise<Coupon[]> => {
+  return fetchAPI<Coupon[]>(`/stores/${slug}/coupons/`);
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Categories API
 // ─────────────────────────────────────────────────────────────────────────────
