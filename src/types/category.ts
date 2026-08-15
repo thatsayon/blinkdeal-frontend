@@ -6,4 +6,5 @@ export interface Category {
   color: string;
   bg_color: string;
   coupon_count: number;
+  updated_at?: string;
 }

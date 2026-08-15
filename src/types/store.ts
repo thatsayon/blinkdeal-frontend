@@ -13,4 +13,5 @@ export interface Store {
   // For PopularRightNow api
   clicks?: string;
   trend?: "up" | "down" | "neutral";
+  updated_at?: string;
 }
