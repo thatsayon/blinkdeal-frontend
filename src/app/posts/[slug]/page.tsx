@@ -114,7 +114,7 @@ export default async function PostDetailPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
       {/* Hero Section */}
-      <header className="pt-16 pb-8">
+      <header className="pt-8 pb-8">
         <div className="container mx-auto px-4 md:px-6 max-w-3xl">
           <Link 
             href="/posts" 
@@ -187,7 +187,7 @@ export default async function PostDetailPage({ params }: Props) {
         {/* Featured Image */}
         {post.cover_image && (
           <div className="container mx-auto px-4 md:px-6 max-w-3xl">
-            <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-lg border border-gray-100">
+            <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden border border-gray-100">
               <Image
                 src={post.cover_image}
                 alt={post.title}
