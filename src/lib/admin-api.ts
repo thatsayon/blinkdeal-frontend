@@ -32,5 +32,9 @@ export async function fetchAdminAPI<T>(endpoint: string, options: RequestInit = 
     throw new Error(errorData.detail || `API Error: ${response.status}`);
   }
 
+  if (response.status === 204) {
+    return {} as T;
+  }
+
   return response.json();
 }

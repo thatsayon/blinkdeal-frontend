@@ -18,6 +18,7 @@ export default function AdminContactsList() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [message, setMessage] = useState<{ type: "success" | "error", text: string } | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
 
   const loadContacts = async () => {
     try {
@@ -40,14 +41,16 @@ export default function AdminContactsList() {
     setTimeout(() => setMessage(null), 3000);
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this contact submission?")) return;
+  const handleDelete = async () => {
+    if (deleteConfirmId === null) return;
     try {
-      await fetchAdminAPI(`/admin/contacts/${id}/`, { method: "DELETE" });
+      await fetchAdminAPI(`/admin/contacts/${deleteConfirmId}/`, { method: "DELETE" });
       showMessage("success", "Contact submission deleted.");
       loadContacts();
     } catch (e) {
       showMessage("error", "Error deleting contact submission.");
+    } finally {
+      setDeleteConfirmId(null);
     }
   };
 
@@ -141,7 +144,7 @@ export default function AdminContactsList() {
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button 
-                          onClick={() => handleDelete(contact.id)} 
+                          onClick={() => setDeleteConfirmId(contact.id)} 
                           className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
                           title="Delete"
                         >
@@ -156,6 +159,35 @@ export default function AdminContactsList() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Popup */}
+      {deleteConfirmId !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6 text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600">
+                <Trash2 className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Delete Submission?</h3>
+              <p className="text-gray-500 mb-6">Are you sure you want to delete this contact submission? This action cannot be undone.</p>
+              <div className="flex gap-3 justify-center">
+                <button
+                  onClick={() => setDeleteConfirmId(null)}
+                  className="px-5 py-2.5 rounded-xl font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="px-5 py-2.5 rounded-xl font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors"
+                >
+                  Yes, Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
