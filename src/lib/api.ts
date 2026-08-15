@@ -69,11 +69,41 @@ export const recordCouponClick = async (couponSlug: string): Promise<void> => {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Search API
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface SearchResults {
+  stores: Store[];
+  coupons: Coupon[];
+  categories: Category[];
+}
+
+export const searchAll = async (query: string, limit = 6): Promise<SearchResults> => {
+  const q = query.trim();
+  if (!q) return { stores: [], coupons: [], categories: [] };
+  return fetchAPI<SearchResults>(`/search/?q=${encodeURIComponent(q)}&limit=${limit}`);
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Stores API
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const getStores = async (featuredOnly = false): Promise<Store[]> => {
-  const query = featuredOnly ? "?featured=true" : "";
+export interface GetStoresParams {
+  featured?: boolean;
+  search?: string;
+}
+
+export const getStores = async (params?: GetStoresParams | boolean): Promise<Store[]> => {
+  if (typeof params === "boolean") {
+    const query = params ? "?featured=true" : "";
+    return fetchAPI<Store[]>(`/stores/${query}`);
+  }
+
+  const queryParams = new URLSearchParams();
+  if (params?.featured) queryParams.set("featured", "true");
+  if (params?.search) queryParams.set("search", params.search);
+
+  const query = queryParams.toString() ? `?${queryParams.toString()}` : "";
   return fetchAPI<Store[]>(`/stores/${query}`);
 };
 

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { Search, SlidersHorizontal, Tag, Zap } from "lucide-react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { Search, SlidersHorizontal, Tag, Zap, X } from "lucide-react";
 import type { Coupon } from "@/types/coupon";
 import CouponCard from "@/components/coupons/CouponCard";
 
@@ -11,21 +12,38 @@ interface DealsClientProps {
     initialCoupons: Coupon[];
 }
 
-export default function DealsClient({ initialCoupons }: DealsClientProps) {
+function DealsContent({ initialCoupons }: DealsClientProps) {
+    const searchParams = useSearchParams();
     const [activeFilter, setActiveFilter] = useState("All Deals");
     const [searchQuery, setSearchQuery] = useState("");
 
-    const filteredCoupons = initialCoupons.filter(coupon => {
-        const matchesCategory = activeFilter === "All Deals" || coupon.category_name === activeFilter;
-        const matchesSearch = coupon.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                              (coupon.store_name || coupon.store || "").toLowerCase().includes(searchQuery.toLowerCase());
+    // Sync search query with URL query parameters (?q=... or ?search=...)
+    useEffect(() => {
+        const q = searchParams.get("q") || searchParams.get("search") || "";
+        if (q) {
+            setSearchQuery(q);
+        }
+    }, [searchParams]);
+
+    const filteredCoupons = initialCoupons.filter((coupon) => {
+        const catName = (coupon.category_name || coupon.category || "").toLowerCase();
+        const matchesCategory =
+            activeFilter === "All Deals" || catName === activeFilter.toLowerCase();
+
+        const q = searchQuery.toLowerCase().trim();
+        const matchesSearch =
+            !q ||
+            coupon.title.toLowerCase().includes(q) ||
+            (coupon.store_name || coupon.store || "").toLowerCase().includes(q) ||
+            (coupon.description || "").toLowerCase().includes(q) ||
+            (coupon.code || "").toLowerCase().includes(q);
+
         return matchesCategory && matchesSearch;
     });
 
     return (
         <main className="min-h-screen bg-white pb-24">
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-
                 {/* Minimalist Editorial Header */}
                 <div className="mb-10 border-b-2 border-gray-900 pb-10">
                     <div className="flex items-center gap-3 mb-6">
@@ -52,9 +70,19 @@ export default function DealsClient({ initialCoupons }: DealsClientProps) {
                                 placeholder="Search deals or stores..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 pl-11 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all"
+                                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 pl-11 pr-10 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all"
                             />
                             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                            {searchQuery && (
+                                <button
+                                    type="button"
+                                    onClick={() => setSearchQuery("")}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-gray-400 hover:text-gray-700"
+                                    aria-label="Clear search"
+                                >
+                                    <X size={16} />
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -82,6 +110,23 @@ export default function DealsClient({ initialCoupons }: DealsClientProps) {
                     </button>
                 </div>
 
+                {/* Active Search / Filter Banner */}
+                {searchQuery && (
+                    <div className="mb-6 flex items-center justify-between rounded-xl bg-blue-50/80 px-4 py-3 border border-blue-100 text-sm text-blue-900">
+                        <div className="flex items-center gap-2">
+                            <span>Showing results for: <strong className="font-bold">"{searchQuery}"</strong></span>
+                            <span className="text-xs text-blue-600">({filteredCoupons.length} found)</span>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setSearchQuery("")}
+                            className="font-bold text-xs text-blue-700 hover:underline"
+                        >
+                            Clear search
+                        </button>
+                    </div>
+                )}
+
                 {/* Grid */}
                 {filteredCoupons.length > 0 ? (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
@@ -95,12 +140,17 @@ export default function DealsClient({ initialCoupons }: DealsClientProps) {
                             <Tag size={24} />
                         </div>
                         <h3 className="text-xl font-bold text-gray-900">No deals found</h3>
-                        <p className="mt-2 text-gray-500 max-w-sm">We couldn't find any deals matching your current filters. Try adjusting your search or category.</p>
+                        <p className="mt-2 text-gray-500 max-w-sm">
+                            We couldn't find any deals matching {searchQuery ? `"${searchQuery}"` : "your current filters"}. Try adjusting your search or category.
+                        </p>
                         <button
-                            onClick={() => { setActiveFilter("All Deals"); setSearchQuery(""); }}
+                            onClick={() => {
+                                setActiveFilter("All Deals");
+                                setSearchQuery("");
+                            }}
                             className="mt-6 px-6 py-2.5 bg-gray-900 text-white font-bold rounded-xl text-sm hover:bg-black transition-colors"
                         >
-                            Clear Filters
+                            Clear Filters & Search
                         </button>
                     </div>
                 )}
@@ -116,8 +166,15 @@ export default function DealsClient({ initialCoupons }: DealsClientProps) {
                         <button className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-bold text-gray-600 hover:bg-gray-50 transition-colors">&gt;</button>
                     </div>
                 )}
-
             </div>
         </main>
+    );
+}
+
+export default function DealsClient({ initialCoupons }: DealsClientProps) {
+    return (
+        <Suspense fallback={<main className="min-h-screen bg-white" />}>
+            <DealsContent initialCoupons={initialCoupons} />
+        </Suspense>
     );
 }
