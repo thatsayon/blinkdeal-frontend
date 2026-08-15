@@ -11,12 +11,14 @@ export async function GET() {
         'categories.xml'
     ];
 
+    const now = new Date().toISOString();
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${sitemaps
     .map(
         (sitemap) => `  <sitemap>
     <loc>${BASE_URL}/sitemaps/${sitemap}</loc>
+    <lastmod>${now}</lastmod>
   </sitemap>`
     )
     .join('\n')}
