@@ -2,11 +2,14 @@ import { NextResponse } from 'next/server';
 
 const BASE_URL = 'https://blinkdeal.cc';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     const sitemaps = [
         'pages.xml',
         'stores.xml',
         'coupons.xml',
+        'products.xml',
         'posts.xml',
         'categories.xml'
     ];
@@ -26,7 +29,7 @@ ${sitemaps
 
     return new NextResponse(xml, {
         headers: {
-            'Content-Type': 'application/xml',
+            'Content-Type': 'text/xml; charset=utf-8',
         },
     });
 }

@@ -1,26 +1,25 @@
 import { NextResponse } from 'next/server';
-import { getStores } from '@/lib/api';
-import { Store } from '@/types/store';
+import { getProducts } from '@/lib/api';
 
 const BASE_URL = 'https://blinkdeal.cc';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-    const stores: Store[] = await getStores().catch(() => []);
+    const products = await getProducts().catch(() => []);
     const now = new Date().toISOString();
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${stores
-    .filter((store) => store.slug)
-    .map((store) => {
-        const lastMod = store.updated_at ? new Date(store.updated_at).toISOString() : now;
+${products
+    .filter((product) => product.slug && (product.store_slug || product.store))
+    .map((product) => {
+        const lastMod = now; // If products have updated_at, use it here
         return `  <url>
-    <loc>${BASE_URL}/stores/${store.slug}</loc>
+    <loc>${BASE_URL}/stores/${product.store_slug || product.store}/products/${product.slug}</loc>
     <lastmod>${lastMod}</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.85</priority>
+    <priority>0.7</priority>
   </url>`;
     })
     .join('\n')}

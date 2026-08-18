@@ -3,6 +3,8 @@ import { getCoupons } from '@/lib/api';
 
 const BASE_URL = 'https://blinkdeal.cc';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     const coupons = await getCoupons().catch(() => []);
     const now = new Date().toISOString();
@@ -25,7 +27,7 @@ ${coupons
 
     return new NextResponse(xml, {
         headers: {
-            'Content-Type': 'application/xml',
+            'Content-Type': 'text/xml; charset=utf-8',
         },
     });
 }

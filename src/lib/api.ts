@@ -120,6 +120,32 @@ export const getStoreCoupons = async (slug: string): Promise<Coupon[]> => {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Products API
+// ─────────────────────────────────────────────────────────────────────────────
+
+import { Product } from "@/types/product";
+
+export const getProducts = async (params?: Record<string, string>): Promise<Product[]> => {
+  const query = params ? `?${new URLSearchParams(params).toString()}` : "";
+  return fetchAPI<Product[]>(`/products/${query}`);
+};
+
+export const getStoreProducts = async (storeSlug: string): Promise<Product[]> => {
+  return fetchAPI<Product[]>(`/products/?store=${storeSlug}`);
+};
+
+export const getProductDetail = async (productSlug: string): Promise<Product> => {
+  return fetchAPI<Product>(`/products/${productSlug}/`);
+};
+
+export const recordProductClick = async (productSlug: string): Promise<void> => {
+  return fetchAPI<void>(`/products/${productSlug}/click/`, { 
+    method: "POST",
+    cache: "no-store", 
+  });
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Categories API
 // ─────────────────────────────────────────────────────────────────────────────
 

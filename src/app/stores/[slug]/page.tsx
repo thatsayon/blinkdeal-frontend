@@ -25,12 +25,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function StoreDetailPage({ params }: Props) {
     try {
         const { slug } = await params;
-        const [store, coupons] = await Promise.all([
+        const [store, coupons, products] = await Promise.all([
             getStoreDetail(slug),
-            getStoreCoupons(slug)
+            getStoreCoupons(slug),
+            import("@/lib/api").then(m => m.getStoreProducts(slug))
         ]);
 
-        return <StoreDetailClient store={store} coupons={coupons} />;
+        return <StoreDetailClient store={store} coupons={coupons} products={products} />;
     } catch (e) {
         console.error("Store detail page error:", e);
         notFound();

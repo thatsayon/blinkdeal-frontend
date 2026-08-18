@@ -13,6 +13,8 @@ export default function AdminSidebar() {
     { name: "Categories", href: "/admin/categories", icon: Tags },
     { name: "Stores", href: "/admin/stores", icon: StoreIcon },
     { name: "Coupons", href: "/admin/coupons", icon: Ticket },
+    { name: "Product Categories", href: "/admin/product-categories", icon: Tags },
+    { name: "Products", href: "/admin/products", icon: StoreIcon },
     { name: "Posts", href: "/admin/posts", icon: FileText },
     { name: "Contacts", href: "/admin/contacts", icon: Mail },
   ];
