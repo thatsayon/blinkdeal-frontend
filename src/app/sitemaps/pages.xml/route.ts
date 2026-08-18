@@ -5,7 +5,7 @@ const BASE_URL = 'https://blinkdeal.cc';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-    const now = new Date().toISOString();
+    const now = new Date().toISOString().split('.')[0] + 'Z';
     
     const pages = [
         { url: BASE_URL, priority: 1.0, changefreq: 'daily' },
@@ -38,7 +38,7 @@ ${pages
 
     return new NextResponse(xml, {
         headers: {
-            'Content-Type': 'text/xml; charset=utf-8',
+            'Content-Type': 'application/xml',
         },
     });
 }

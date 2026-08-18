@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
     const products = await getProducts().catch(() => []);
-    const now = new Date().toISOString();
+    const now = new Date().toISOString().split('.')[0] + 'Z';
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -27,7 +27,7 @@ ${products
 
     return new NextResponse(xml, {
         headers: {
-            'Content-Type': 'text/xml; charset=utf-8',
+            'Content-Type': 'application/xml',
         },
     });
 }

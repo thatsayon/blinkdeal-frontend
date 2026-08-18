@@ -14,7 +14,7 @@ export async function GET() {
         'categories.xml'
     ];
 
-    const now = new Date().toISOString();
+    const now = new Date().toISOString().split('.')[0] + 'Z';
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${sitemaps
@@ -29,7 +29,7 @@ ${sitemaps
 
     return new NextResponse(xml, {
         headers: {
-            'Content-Type': 'text/xml; charset=utf-8',
+            'Content-Type': 'application/xml',
         },
     });
 }
